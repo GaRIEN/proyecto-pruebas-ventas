@@ -1,1 +1,15 @@
-<Solution />
+<Solution>
+  <Folder Name="/ApiClients/">
+    <Project Path="ApiClients/ApiClients.csproj" />
+  </Folder>
+  <Folder Name="/Ventas/">
+    <Project Path="Ventas.Api/Ventas.Api.csproj" />
+    <Project Path="Ventas.Application/Ventas.Application.csproj" />
+    <Project Path="Ventas.Core/Ventas.Core.csproj" />
+    <Project Path="Ventas.Infraestructure/Ventas.Infraestructure.csproj" />
+  </Folder>
+  <Folder Name="/VentasWebApp/">
+    <File Path=".gitignore" />
+    <Project Path="Ventas.WebApp/Ventas.WebApp.csproj" />
+  </Folder>
+</Solution>

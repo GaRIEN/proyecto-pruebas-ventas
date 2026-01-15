@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\Base\" />
+    <Folder Include="Entities\DapperModels\" />
+    <Folder Include="Entities\Extensions\" />
+    <Folder Include="Entities\Models\" />
+    <Folder Include="Entities\ViewModels\" />
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>
