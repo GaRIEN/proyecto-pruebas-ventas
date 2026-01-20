@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Endpoints\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Ventas.Application\Ventas.Application.csproj" />
     <ProjectReference Include="..\Ventas.Infraestructure\Ventas.Infraestructure.csproj" />
   </ItemGroup>
