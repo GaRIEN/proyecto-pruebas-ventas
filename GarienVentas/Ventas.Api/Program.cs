@@ -2,8 +2,10 @@
 using Ventas.Api.Endpoints.Base;
 using Ventas.Application.Queries.ClientsQueries;
 using Ventas.Core.Repositories;
+using Ventas.Core.Repositories.Base;
 using Ventas.Infraestructure.Data;
 using Ventas.Infraestructure.Repositories;
+using Ventas.Infraestructure.Repositories.Base;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,8 +27,20 @@ builder.Services.AddDbContext<VentasDbContext>(options =>
         builder.Configuration.GetConnectionString("VentasDb"));
 });
 
+
 // ✅ Repositories
-builder.Services.AddScoped<IClientRepository, ClientRepository>();
+//builder.Services.AddScoped<IClientRepository, ClientRepository>();
+// Repositorios
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+builder.Services.Scan(scan => scan
+    .FromAssemblies(typeof(ClientRepository).Assembly)
+    .AddClasses(c => c.InNamespaces("Ventas.Infraestructure.Repositories"))
+    .AsImplementedInterfaces()
+    .WithScopedLifetime()
+);
+
+
 
 // ✅ MediatR
 builder.Services.AddMediatR(cfg =>
@@ -42,6 +56,8 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage(); // 👈 CLAVE
+
     app.UseSwagger();
     app.UseSwaggerUI();
 }

@@ -16,7 +16,7 @@ namespace Ventas.Application.Handlers.ClientsHandlers
 
         public async Task<IEnumerable<ClientsResponse>> Handle(GetAllClientsQuery request, CancellationToken cancellationToken)
         {
-            var clients = await _repository.GetAllAsync();
+            var clients = await _repository.GetAllClients();
             var response = ClientsMapper.Mapper.Map<IEnumerable<ClientsResponse>>(clients);
             return response;
         }

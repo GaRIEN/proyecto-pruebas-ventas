@@ -6,9 +6,7 @@ namespace Ventas.Infraestructure.Data;
 
 public partial class VentasDbContext : DbContext
 {
-    public VentasDbContext()
-    {
-    }
+
 
     public VentasDbContext(DbContextOptions<VentasDbContext> options)
         : base(options)

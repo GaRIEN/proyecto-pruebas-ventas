@@ -4,7 +4,7 @@ namespace Ventas.Core.Repositories
 {
     public interface IClientRepository
     {
-        Task<IEnumerable<Client>> GetAllAsync();
+        Task<IEnumerable<Client>> GetAllClients();
 
     }
 }
