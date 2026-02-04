@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Ventas.Api.Endpoints.Base;
+using Ventas.Api.Middleware;
 using Ventas.Application.Queries.ClientsQueries;
 using Ventas.Core.Repositories;
 using Ventas.Core.Repositories.Base;
@@ -61,6 +62,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// ✅ Tu nuevo Middleware Global
+app.UseMiddleware<ExceptionMiddleware>();
+
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
