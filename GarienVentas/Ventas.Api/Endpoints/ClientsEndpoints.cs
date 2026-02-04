@@ -13,13 +13,10 @@ namespace Ventas.Api.Endpoints
             {
                 try
                 {
-                    // 1. Crear el objeto Query con los parámetros capturados
                     var query = new GetAllClientsQuery();
 
-                    // 2. Enviar la consulta y obtener la respuesta completa (incluyendo TotalRows)
                     var response = await mediator.Send(query);
 
-                    // 3. Devolver la respuesta exitosa (200 OK)
                     return Results.Ok(response);
                 }
                 catch (ValidationException)
