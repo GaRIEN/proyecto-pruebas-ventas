@@ -17,6 +17,7 @@ public partial class VentasDbContext : DbContext
 
     public virtual DbSet<Client> Clients { get; set; }
 
+    public virtual DbSet<Product> Products { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -25,6 +26,14 @@ public partial class VentasDbContext : DbContext
             entity.HasKey(e => e.ClientId).HasName("PK__clients__81A2CBE1D3F53EBE");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetime())");
+        });
+
+        modelBuilder.Entity<Product>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Products__3214EC07EA05433A");
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
         });
 
         OnModelCreatingPartial(modelBuilder);
