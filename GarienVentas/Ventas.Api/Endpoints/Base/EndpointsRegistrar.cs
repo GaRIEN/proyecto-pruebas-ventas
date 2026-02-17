@@ -5,6 +5,7 @@
         public static void RegisterEndpoints(WebApplication app)
         {
             app.MapClientsEndpoints();
+            app.MapUsuariosEndpoints();
         }
     }
 }

@@ -7,6 +7,6 @@ namespace ApiClients.Ventas
 {
     public  interface IUsuariosApiClient
     {
-        Task<ApiResult<IEnumerable<ClientsResponse>>> GetAllUsuariosAsync(CancellationToken ct = default);
+        Task<ApiResult<string>> GetAllUsuariosAsync(CancellationToken ct = default);
     }
 }

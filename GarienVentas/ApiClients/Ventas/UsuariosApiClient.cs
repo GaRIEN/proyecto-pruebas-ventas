@@ -8,8 +8,8 @@ namespace ApiClients.Ventas
     {
 
 
-        public Task<ApiResult<IEnumerable<ClientsResponse>>> GetAllUsuariosAsync(CancellationToken ct = default)
-       => TryGetAsync<IEnumerable<ClientsResponse>>($"/api/clients/getAll", ct);
+        public Task<ApiResult<string>> GetAllUsuariosAsync(CancellationToken ct = default)
+       => TryGetAsync<string>($"/api/clients/getAll", ct);
 
     }
 }

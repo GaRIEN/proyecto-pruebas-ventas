@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using Ventas.Core.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +19,8 @@ public partial class VentasDbContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
 
+    public virtual DbSet<Usuario> Usuarios { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Client>(entity =>
@@ -34,6 +36,13 @@ public partial class VentasDbContext : DbContext
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
+        });
+
+        modelBuilder.Entity<Usuario>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Usuarios__3214EC07D3AD5A48");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
         });
 
         OnModelCreatingPartial(modelBuilder);
