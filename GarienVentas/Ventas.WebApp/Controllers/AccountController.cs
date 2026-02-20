@@ -1,15 +1,22 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using ApiClients.Models.Commands.Usuario;
+using ApiClients.Ventas;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 
 namespace Ventas.WebApp.Controllers
 {
     public class AccountController : Controller
     {
-        public AccountController()
+
+        private readonly ILogger<AccountController> _logger; // <-- Agrégalo aquí
+        private readonly IUsuariosApiClient _sessionService;
+        public AccountController(IUsuariosApiClient sessionService, ILogger<AccountController> logger)
         {
-            
+            _sessionService = sessionService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -20,6 +27,64 @@ namespace Ventas.WebApp.Controllers
             // Si el usuario ya está logueado, lo mandamos al Home
             if (User.Identity.IsAuthenticated) return RedirectToAction("Index", "Home");
             return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> GetLoginUser([FromBody] UsuarioCommand item)
+        {
+            try
+            {
+                // 1. Llamamos a tu servicio que conecta con la API de Ventas
+                var response = await _sessionService.GetLoginUser(item);
+
+                if (!response.IsSuccess)
+                {
+                    _logger.LogError("Login fallido: {Error}", response.Error);
+                    return BadRequest(new { message = response.Error ?? "Credenciales inválidas" });
+                }
+
+                // --- INICIO DE LA FIRMA DE SESIÓN ---
+
+                // 2. Extraemos el JWT que nos devolvió la API
+                var usuarioData = response.Data;
+                if (usuarioData == null)
+                {
+                    return BadRequest("No se recibió información del usuario.");
+                }
+                string jwtToken = usuarioData.Token;
+
+                // 3. Creamos la lista de "Claims" (información del usuario para la WebApp)
+                var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, item.NombreUsuario),
+            new Claim("JWToken", jwtToken) // Guardamos el token aquí para usarlo en futuras llamadas a la API
+        };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                // 4. Configuramos las propiedades de la sesión (Seguridad y Tiempo)
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true, // Permite que la sesión persista según el tiempo configurado
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60), // Coincide con tu Program.cs
+                    AllowRefresh = true // Permite Sliding Expiration
+                };
+
+                // 5. ¡PASO CLAVE! Creamos la Cookie de autenticación encriptada
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    authProperties);
+
+                // 6. Respondemos al JS que todo salió bien
+                return Ok(new { isSuccess = true, message = "Bienvenido al sistema" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Excepción en login para usuario: {Usuario}", item.NombreUsuario);
+                return StatusCode(500, "Error interno del servidor");
+            }
         }
 
         //[HttpPost]

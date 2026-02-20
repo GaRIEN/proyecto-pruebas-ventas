@@ -10,8 +10,21 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
+        // 1. Rutas básicas
         options.LoginPath = "/Account/Login";
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+        options.AccessDeniedPath = "/Account/AccessDenied";
+
+        // 2. Tiempos de vida
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Duración de la sesión
+        options.SlidingExpiration = true; // Si el usuario navega a los 40 min, se reinicia a 60 min
+
+        // 3. SEGURIDAD CRÍTICA (Evita que te roben el token)
+        options.Cookie.HttpOnly = true; // JS no podrá leer la cookie, solo el servidor
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Solo viaja por HTTPS
+        options.Cookie.SameSite = SameSiteMode.Lax; // Protección básica contra ataques CSRF
+
+        options.Cookie.Name = "Ventas.AuthToken"; // Nombre personalizado para la cookie
+
     });
 
 // 2. REGISTRAR TUS API CLIENTS

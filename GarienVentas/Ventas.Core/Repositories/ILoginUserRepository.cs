@@ -5,6 +5,6 @@ namespace Ventas.Core.Repositories
 {
     public interface ILoginUserRepository
     {
-        Task<string> LoginUser(string Usuario, string Password);
+        Task<Usuario> LoginAndGenerateToken(Usuario item);
     }
 }

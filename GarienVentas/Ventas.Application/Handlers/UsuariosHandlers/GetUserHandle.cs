@@ -1,20 +1,26 @@
 ﻿
 using MediatR;
+using Ventas.Application.Commands.UsuarioCommands;
 using Ventas.Application.Mappers.usuarioMappers;
-using Ventas.Application.Queries.UsuarioQueries;
+using Ventas.Application.Responses.UsuarioResponses;
+using Ventas.Core.Entities.Models;
 using Ventas.Core.Repositories;
 
 namespace Ventas.Application.Handlers.UsuariosHandlers
 {
-    public class GetUserHandle (ILoginUserRepository _repository) : IRequestHandler<LoginUserQuery, string>
+    public class GetUserHandle (ILoginUserRepository _repository) : IRequestHandler<UsuarioCommand, UsuarioResponse>
     {
-        public async Task<string> Handle(LoginUserQuery request, CancellationToken cancellationToken)
+        public async Task<UsuarioResponse> Handle(UsuarioCommand request, CancellationToken cancellationToken)
         {
-            // El repositorio ya hace la validación y devuelve el string o null
-            var token = await _repository.LoginUser(request.Usuario, request.Password);
 
-            // No necesitamos Mapper aquí porque el resultado ya es el string que esperamos
-            return token;
+            var entity = UsuarioMapper.Mapper.Map<Usuario>(request);
+            if (entity is null)
+            {
+                throw new ApplicationException("not mapped");
+            }
+            var command = await _repository.LoginUser(entity);
+            var response = UsuarioMapper.Mapper.Map<UsuarioResponse>(command);
+            return response;
         }
     }
 }
